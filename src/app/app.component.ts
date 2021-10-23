@@ -27,9 +27,11 @@ export class AppComponent implements OnInit {
   elementToPrint?: HTMLElement;
 
   public ngOnInit(): void {
+    const rounds = Number(localStorage.getItem('ANGULAR_PDF_ROUNDS')) || 4;
+
     this.elementToPrint = document.querySelector('body') as HTMLElement;
 
-    for (let i = 0; i < 4; i++) this.users.push(...this.users);
+    for (let i = 0; i < rounds; i++) this.users.push(...this.users);
   }
 
   handleClick = this.printPdf;
@@ -60,7 +62,7 @@ export class AppComponent implements OnInit {
 
     const pdf = new jsPDF('p', 'mm', 'a4');
 
-    const imageData = canvas.toDataURL('image/png', 1.0);
+    const imageData = canvas.toDataURL('image/jpeg', 1.0);
 
     const pageCount = Math.floor(documentHeight / valueUsedPerPage);
 
@@ -69,14 +71,14 @@ export class AppComponent implements OnInit {
 
       pdf.addImage(
         imageData, //imageData
-        'PNG', //format
+        'JPEG', //format
         0, //x
         position, //y
         documentWidth, //w
         documentHeight, //h
         undefined, //alias
-        undefined, //compression
-        undefined //rotation
+        'MEDIUM', //compression
+        0 //rotation
       );
 
       if (i !== 0) pdf.insertPage(1);
